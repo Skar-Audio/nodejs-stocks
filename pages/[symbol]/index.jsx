@@ -6,7 +6,7 @@ import {Badge} from '@/components/ui/badge';
 import {Skeleton} from '@/components/ui/skeleton';
 import PriceChart from '@/components/price-chart';
 import TickerLayout from '@/components/layouts/ticker-layout';
-import {TrendingUp, TrendingDown, RefreshCw} from 'lucide-react';
+import {RefreshCw, TrendingDown, TrendingUp} from 'lucide-react';
 
 export default function TickerOverviewPage() {
 	const router = useRouter();
@@ -161,7 +161,9 @@ export default function TickerOverviewPage() {
 
 				<Card>
 					<CardHeader className="pb-2">
-						<CardTitle className="text-sm font-medium text-muted-foreground">Volume</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
+                            Volume
+                        </CardTitle>
 					</CardHeader>
 					<CardContent>
 						<p className="text-2xl font-bold">{(quote.volume / 1000000).toFixed(2)}M</p>
@@ -184,7 +186,8 @@ export default function TickerOverviewPage() {
 					<CardContent>
 						<Button className="w-full">Generate AI Analysis</Button>
 						<p className="mt-4 text-sm text-muted-foreground">
-							Click to analyze {symbolUpper} using AI providers (OpenAI, Gemini, or Anthropic)
+                            Click to analyze {symbolUpper} using AI providers (OpenAI, Gemini, or
+                            Anthropic)
 						</p>
 					</CardContent>
 				</Card>

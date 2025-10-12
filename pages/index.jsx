@@ -121,7 +121,9 @@ export default function HomePage() {
 							</div>
 						) : watchlist.length === 0 ? (
 							<div className="text-center py-12">
-								<p className="text-muted-foreground mb-4">No stocks in your watchlist yet</p>
+                                <p className="text-muted-foreground mb-4">
+                                    No stocks in your watchlist yet
+                                </p>
 								<Button>
 									<Plus className="mr-2 h-4 w-4" />
 									Add Your First Stock
@@ -156,7 +158,9 @@ export default function HomePage() {
 										</div>
 										<div className="flex items-center space-x-6">
 											<div className="text-right">
-												<p className="text-lg font-semibold">${stock.price.toFixed(2)}</p>
+                                                <p className="text-lg font-semibold">
+                                                    ${stock.price.toFixed(2)}
+                                                </p>
 												<div
 													className={`flex items-center text-sm ${stock.change >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}
 												>

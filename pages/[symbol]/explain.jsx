@@ -2,7 +2,7 @@ import {useRouter} from 'next/router';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Badge} from '@/components/ui/badge';
 import TickerLayout from '@/components/layouts/ticker-layout';
-import {AlertTriangle, BarChart3, TrendingUp, Info} from 'lucide-react';
+import {AlertTriangle, BarChart3, Info, TrendingUp} from 'lucide-react';
 
 export default function TickerExplainPage() {
 	const router = useRouter();
@@ -98,7 +98,9 @@ export default function TickerExplainPage() {
 												<BarChart3 className="h-4 w-4 text-muted-foreground" />
 											)}
 										</div>
-										<span className="text-sm font-semibold">{(feature.weight * 100).toFixed(0)}%</span>
+                                        <span className="text-sm font-semibold">
+											{(feature.weight * 100).toFixed(0)}%
+										</span>
 									</div>
 									<div className="relative h-2 bg-muted rounded-full overflow-hidden">
 										<div
@@ -186,8 +188,8 @@ export default function TickerExplainPage() {
 					</CardHeader>
 					<CardContent>
 						<p className="text-sm text-muted-foreground">
-							Population Stability Index (PSI) above threshold. Model may need retraining with
-							recent data.
+                            Population Stability Index (PSI) above threshold. Model may need retraining
+                            with recent data.
 						</p>
 					</CardContent>
 				</Card>
@@ -203,13 +205,13 @@ export default function TickerExplainPage() {
 				</CardHeader>
 				<CardContent className="space-y-2 text-sm text-muted-foreground">
 					<p>
-						<strong>MAE (Mean Absolute Error):</strong> Average prediction error in dollars. Lower
-						is better.
-					</p>
-					<p>
-						<strong>MAPE (Mean Absolute Percentage Error):</strong> Average error as percentage.
+                        <strong>MAE (Mean Absolute Error):</strong> Average prediction error in dollars.
 						Lower is better.
 					</p>
+                    <p>
+                        <strong>MAPE (Mean Absolute Percentage Error):</strong> Average error as
+                        percentage. Lower is better.
+                    </p>
 					<p>
 						<strong>PSI (Population Stability Index):</strong> Measures data drift. {'<'}0.1 =
 						stable, 0.1-0.2 = slight shift, {'>'}0.2 = significant drift.
