@@ -26,24 +26,18 @@ export default async function handler(req, res) {
         // Fetch news from database
         const newsItems = await newsTable.select(
             {stock_id: stock.id},
-            {orderBy: 'published_at', order: 'DESC', size: parseInt(limit)}
+            {orderBy: 'published_date', order: 'DESC', size: parseInt(limit)}
         );
 
         // Transform to API format
         const formattedNews = newsItems.map((item) => ({
             id: item.id,
             title: item.title,
-            summary: item.summary || item.description,
+            summary: item.summary,
             url: item.url,
             source: item.source,
-            publishedAt: item.published_at,
-            sentiment: item.sentiment_score
-                ? {
-                    score: parseFloat(item.sentiment_score),
-                    label: item.sentiment_label || getSentimentLabel(item.sentiment_score)
-                }
-                : null,
-            relevance: item.relevance_score ? parseFloat(item.relevance_score) : null
+            publishedAt: item.published_date,
+            sentiment: item.sentiment || 'neutral'
         }));
 
         return res.status(200).json({
@@ -58,11 +52,4 @@ export default async function handler(req, res) {
             error: error.message || 'Failed to fetch news'
         });
     }
-}
-
-function getSentimentLabel(score) {
-    const s = parseFloat(score);
-    if (s >= 0.3) return 'Bullish';
-    if (s <= -0.3) return 'Bearish';
-    return 'Neutral';
 }
