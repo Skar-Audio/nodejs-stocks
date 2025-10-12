@@ -78,7 +78,7 @@ export default function HealthRibbon() {
 				variant={isHealthy ? 'default' : 'destructive'}
 				className="gap-1 bg-green-600 hover:bg-green-700"
 			>
-                {isHealthy ? <CheckCircle className="h-3 w-3"/> : <AlertCircle className="h-3 w-3"/>}
+				{isHealthy ? <CheckCircle className="h-3 w-3"/> : <AlertCircle className="h-3 w-3"/>}
 				Backend {isHealthy ? 'OK' : 'Degraded'}
 			</Badge>
 		);

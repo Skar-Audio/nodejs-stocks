@@ -5,6 +5,8 @@ import {Button} from '@/components/ui/button';
 import {Badge} from '@/components/ui/badge';
 import {Skeleton} from '@/components/ui/skeleton';
 import PriceChart from '@/components/price-chart';
+import SignalsPanel from '@/components/signals-panel';
+import NewsLane from '@/components/news-lane';
 import TickerLayout from '@/components/layouts/ticker-layout';
 import {RefreshCw, TrendingDown, TrendingUp} from 'lucide-react';
 
@@ -14,6 +16,7 @@ export default function TickerOverviewPage() {
 	const symbolUpper = symbol?.toUpperCase();
 
 	const [stockData, setStockData] = useState(null);
+    const [predictions, setPredictions] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const [refreshing, setRefreshing] = useState(false);
@@ -44,9 +47,31 @@ export default function TickerOverviewPage() {
 		}
 	};
 
+    const fetchPredictions = async () => {
+        if (!symbolUpper) return;
+
+        try {
+            const response = await fetch(`/api/predict/${symbolUpper}`);
+            const result = await response.json();
+
+            if (result.success && result.predictions) {
+                // Transform predictions to chart format
+                const chartPredictions = result.predictions.map((p) => ({
+                    date: p.targetDate,
+                    point: p.predictedPrice
+                }));
+                setPredictions(chartPredictions);
+            }
+        } catch (err) {
+            console.error('Error fetching predictions:', err);
+            // Don't show error to user - predictions are optional
+        }
+    };
+
 	useEffect(() => {
 		if (symbolUpper) {
 			fetchStockData();
+            fetchPredictions();
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [symbolUpper]);
@@ -171,49 +196,62 @@ export default function TickerOverviewPage() {
 				</Card>
 			</div>
 
-			{/* Chart */}
-			<div className="mb-6">
-				<PriceChart data={timeSeries} symbol={symbolUpper} />
+            {/* Chart and News */}
+            <div className="mb-6 grid gap-6 lg:grid-cols-3">
+                <div className="lg:col-span-2">
+                    <PriceChart data={timeSeries} symbol={symbolUpper} predictions={predictions}/>
+                </div>
+                <div>
+                    <NewsLane symbol={symbolUpper}/>
+                </div>
 			</div>
 
-			{/* Analysis & Stats */}
-			<div className="grid gap-6 md:grid-cols-2">
-				<Card>
-					<CardHeader>
-						<CardTitle>AI Analysis</CardTitle>
-						<CardDescription>Get AI-powered insights for this stock</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<Button className="w-full">Generate AI Analysis</Button>
-						<p className="mt-4 text-sm text-muted-foreground">
-                            Click to analyze {symbolUpper} using AI providers (OpenAI, Gemini, or
-                            Anthropic)
-						</p>
-					</CardContent>
-				</Card>
+            {/* Signals and Analysis */}
+            <div className="grid gap-6 lg:grid-cols-3">
+                {/* Signals Panel - Takes 1 column */}
+                <div className="lg:col-span-1">
+                    <SignalsPanel/>
+                </div>
 
-				<Card>
-					<CardHeader>
-						<CardTitle>Quick Stats</CardTitle>
-						<CardDescription>Key metrics and information</CardDescription>
-					</CardHeader>
-					<CardContent className="space-y-3">
-						<div className="flex justify-between">
-							<span className="text-sm text-muted-foreground">Previous Close</span>
-							<span className="font-medium">${quote.previousClose?.toFixed(2)}</span>
-						</div>
-						<div className="flex justify-between">
-							<span className="text-sm text-muted-foreground">Day Range</span>
-							<span className="font-medium">
-								${quote.low?.toFixed(2)} - ${quote.high?.toFixed(2)}
-							</span>
-						</div>
-						<div className="flex justify-between">
-							<span className="text-sm text-muted-foreground">Volume</span>
-							<span className="font-medium">{quote.volume?.toLocaleString()}</span>
-						</div>
-					</CardContent>
-				</Card>
+                {/* Analysis & Stats - Takes 2 columns */}
+                <div className="lg:col-span-2 space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>AI Analysis</CardTitle>
+                            <CardDescription>Get AI-powered insights for this stock</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Button className="w-full">Generate AI Analysis</Button>
+                            <p className="mt-4 text-sm text-muted-foreground">
+                                Click to analyze {symbolUpper} using AI providers (OpenAI, Gemini, or
+                                Anthropic)
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Quick Stats</CardTitle>
+                            <CardDescription>Key metrics and information</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            <div className="flex justify-between">
+                                <span className="text-sm text-muted-foreground">Previous Close</span>
+                                <span className="font-medium">${quote.previousClose?.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-sm text-muted-foreground">Day Range</span>
+                                <span className="font-medium">
+									${quote.low?.toFixed(2)} - ${quote.high?.toFixed(2)}
+								</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-sm text-muted-foreground">Volume</span>
+                                <span className="font-medium">{quote.volume?.toLocaleString()}</span>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
 			</div>
 		</TickerLayout>
 	);

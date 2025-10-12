@@ -1,30 +1,77 @@
+import {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Badge} from '@/components/ui/badge';
+import {Skeleton} from '@/components/ui/skeleton';
 import TickerLayout from '@/components/layouts/ticker-layout';
-import {TrendingUp, Download, Settings} from 'lucide-react';
+import {Download, Settings, TrendingUp} from 'lucide-react';
 
 export default function TickerBacktestPage() {
 	const router = useRouter();
 	const {symbol} = router.query;
 	const symbolUpper = symbol?.toUpperCase();
 
-	// Mock backtest data - will be replaced with real data
-	const backtestResults = {
-		cagr: 15.4,
-		sharpe: 1.82,
-		maxDrawdown: -12.3,
-		hitRate: 67.2,
-		totalTrades: 48,
-		winningTrades: 32,
-		losingTrades: 16,
-		benchmarkComparison: {
-			symbol: 'SPY',
-			cagr: 10.2,
-			sharpe: 1.45
-		}
-	};
+    const [backtestResults, setBacktestResults] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        if (!symbolUpper) return;
+
+        const fetchBacktest = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch(`/api/backtest/${symbolUpper}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    setBacktestResults(result.backtest);
+                } else {
+                    setError(result.error || 'Failed to fetch backtest results');
+                }
+            } catch (err) {
+                console.error('Error fetching backtest:', err);
+                setError('Failed to load backtest results');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchBacktest();
+    }, [symbolUpper]);
+
+    if (loading) {
+        return (
+            <TickerLayout symbol={symbolUpper || '...'} activeTab="backtest">
+                <Skeleton className="mb-6 h-12 w-64"/>
+                <div className="mb-6 grid gap-4 md:grid-cols-4">
+                    <Skeleton className="h-32"/>
+                    <Skeleton className="h-32"/>
+                    <Skeleton className="h-32"/>
+                    <Skeleton className="h-32"/>
+                </div>
+                <Skeleton className="h-96"/>
+            </TickerLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <TickerLayout symbol={symbolUpper || '...'} activeTab="backtest">
+                <Card className="border-destructive">
+                    <CardHeader>
+                        <CardTitle className="text-destructive">Error Loading Backtest</CardTitle>
+                        <CardDescription>{error}</CardDescription>
+                    </CardHeader>
+                </Card>
+            </TickerLayout>
+        );
+    }
+
+    if (!backtestResults) {
+        return null;
+    }
 
 	return (
 		<TickerLayout symbol={symbolUpper || '...'} activeTab="backtest">
