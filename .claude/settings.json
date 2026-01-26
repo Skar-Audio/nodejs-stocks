@@ -1,0 +1,36 @@
+{
+    "permissions": {
+        "allow": [
+            "Bash(cat:.env*)",
+            "Bash(chmod:*)",
+            "Bash(curl:*)",
+            "Bash(echo:*)",
+            "Bash(env:*)",
+            "Bash(export:*)",
+            "Bash(git checkout:*)",
+            "Bash(grep:*)",
+            "Bash(ls:*)",
+            "Bash(mkdir:*)",
+            "Bash(mv:*)",
+            "Bash(node test:*)",
+            "Bash(node:*)",
+            "Bash(npm run:*)",
+            "Bash(npm:*)",
+            "Bash(npx biome check:*)",
+            "Bash(npx eslint:*)",
+            "Bash(npx next lint:*)",
+            "Bash(printenv:*)",
+            "Bash(rg:*)",
+            "Bash(rm:*)",
+            "Bash(source:*)",
+            "Bash(touch:*)",
+            "WebFetch(domain:github.com)",
+            "WebFetch(domain:www.npmjs.com)"
+        ],
+        "deny": [
+            "Bash(rm:.env*)",
+            "Bash(rm:-rf)",
+            "Bash(rm:--force)"
+        ]
+    }
+}
