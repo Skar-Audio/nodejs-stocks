@@ -13,6 +13,18 @@ Stock analysis application with AI-powered predictions using multiple AI provide
 
 ---
 
+## Agent Delegation
+
+| Agent | Triggers On | Model |
+|-------|-------------|-------|
+| `debugging-pro` | Errors, test failures, stack traces | Opus |
+| `backend-architect` | API design, architecture decisions | Opus |
+| `code-reviewer` | Post-implementation review | Sonnet |
+
+**Manual invocation**: "Use the {agent-name} agent to..."
+
+---
+
 ## Commands
 
 ```bash

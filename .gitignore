@@ -44,3 +44,7 @@ next-env.d.ts
 *.log
 ngrok.log
 /node_modules/
+
+# Claude-specific temporary files and logs
+.claude/temp/
+.claude/logs/
